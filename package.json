@@ -1,0 +1,24 @@
+{
+    "name": "gps-logger",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://https://github.com/715209/gps-logger.git"
+    },
+    "author": "Brian Spit",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://https://github.com/715209/gps-logger/issues"
+    },
+    "homepage": "https://https://github.com/715209/gps-logger#readme",
+    "dependencies": {
+        "express": "^4.16.4",
+        "socket.io": "^2.2.0"
+    }
+}
