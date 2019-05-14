@@ -13,7 +13,7 @@ app.get("/log", (req, res) => {
     }
 
     if (req.query.speed) {
-        req.query.speed = `${Math.floor(req.query.speed * 0.621371)} MPH`;
+        req.query.speed = `${Math.floor(req.query.speed * 2.2369)} MPH`;
     }
 
     if (req.query.battery) {
