@@ -13,7 +13,7 @@
         </style>
     </head>
     <body>
-        <ul id="data"></ul>
+        <div id="data"></div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
         <script>
@@ -21,7 +21,13 @@
             const element = document.getElementById("data");
 
             socket.on("data", data => {
-                element.innerHTML = JSON.stringify(data);
+                html = "";
+
+                Object.keys(data).forEach(item => {
+                    html += `<p>${item}: ${data[item]}</p>`;
+                });
+
+                element.innerHTML = html;
             });
         </script>
     </body>
