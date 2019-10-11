@@ -19,6 +19,7 @@
     "homepage": "https://https://github.com/715209/gps-logger#readme",
     "dependencies": {
         "express": "^4.16.4",
+        "node-fetch": "^2.6.0",
         "socket.io": "^2.2.0"
     }
 }
