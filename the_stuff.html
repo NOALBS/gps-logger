@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>THE STUFF</title>
+        <style>
+			@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
+
+            @font-face {font-family: "SignPainter HouseScript";
+                src: url("//b3ck.com/fonts/cfdf18a10f253f0aa9db6db978d328c0.eot");
+                src: url("//b3ck.com/fonts/cfdf18a10f253f0aa9db6db978d328c0.eot?#iefix") format("embedded-opentype"),
+                     url("//b3ck.com/fonts/cfdf18a10f253f0aa9db6db978d328c0.woff2") format("woff2"),
+                     url("//b3ck.com/fonts/cfdf18a10f253f0aa9db6db978d328c0.woff") format("woff"),
+                     url("//b3ck.com/fonts/cfdf18a10f253f0aa9db6db978d328c0.ttf") format("truetype"),
+                     url("//b3ck.com/fonts/cfdf18a10f253f0aa9db6db978d328c0.svg#SignPainter HouseScript") format("svg");
+            }
+			
+            body { 
+                background-color: rgba(0, 0, 0, 0) !important;
+                background: none !important;
+	
+                padding: 0 !important; 
+                margin: auto !important;
+	
+                text-align: left !important;
+                text-transform: uppercase !important;
+                font-family: 'Open Sans', sans-serif !important;
+                color: #fff !important;
+                font-size: 68px !important;
+                font-weight: 700 !important;
+	
+                display: inline-block !important;
+                -webkit-box-sizing: content-box !important;
+                -moz-box-sizing: content-box !important;
+                box-sizing: content-box !important;
+	
+                float: none !important;
+                z-index: auto !important;
+	
+                width: 100% !important;
+                height: 100% !important;
+	
+                position: static !important;
+	
+                cursor: default !important;
+	
+                opacity: 1 !important;
+
+                overflow: visible !important;
+	
+                border: none !important;
+                -webkit-border-radius: 0 !important;
+                border-radius: 0 !important;
+	
+                -webkit-box-shadow: none !important;
+                box-shadow: none !important;
+                text-shadow: 1px 1px 0 rgba(140,140,140,0.6) , -1px -1px 1px rgba(0,0,0,0.67) !important;
+	
+                -webkit-transition: none !important;
+                -moz-transition: none !important;
+                -o-transition: none !important;
+                transition: none !important;
+            }
+			
+			#data {
+				text-align: left;
+				padding: 50px;
+				-webkit-filter: drop-shadow( 0px 0px 9px rgba(0, 0, 0, .7));
+				filter: drop-shadow( 0px 0px 9px rgba(0, 0, 0, .7));
+				/* Similar syntax to box-shadow */
+			}
+
+            .name {
+                text-transform: uppercase !important;
+                font-family: 'SignPainter HouseScript' !important;
+                color: #fff !important;
+                font-size: 68px !important;
+                font-weight: 300 !important;
+                text-shadow: 2px 3px 2px rgba(0,0,0,0.75) !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="data"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+        <script>
+            const socket = io();
+            const element = document.getElementById("data");
+
+            socket.on("THESTUFF", data => {
+                html = "";
+				html += `<p class="name">${data.city}, ${data.state} - ${data.country}</p>`;
+                html += `<p class="temp">${data.temp}&#176;F</p>`;
+                html += `<p class="time">${data.time}</p>`;
+                html += `<p class="postal">${data.zipcode}</p>`;
+
+                element.innerHTML = html;
+            });
+        </script>
+    </body>
+</html>

@@ -4,12 +4,33 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>GPS</title>
+        <title>BATT - SPEED - ALT</title>
         <style>
-            body {
-                margin: 0;
-                padding: 0;
-            }
+			@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
+			
+			body { 
+				background-color: #000000 !important;
+				margin: 5px;
+                padding: 5px;
+				font-family: 'Open Sans', sans-serif;
+				overflow: hidden;
+				color: #1e90ff;
+				font-size: 36px;
+				font-weight: 700;
+				text-transform: uppercase;
+			}
+			
+			#data {
+				text-align: right;
+				padding: 10px;
+				-webkit-filter: drop-shadow( 0px 0px 9px rgba(0, 0, 0, .7));
+				filter: drop-shadow( 0px 0px 9px rgba(0, 0, 0, .7));
+				/* Similar syntax to box-shadow */
+			}
+			
+			.a {
+			text-align: left !important;
+			}
         </style>
     </head>
     <body>
@@ -24,7 +45,7 @@
                 html = "";
 
                 Object.keys(data).forEach(item => {
-                    html += `<p>${item}: ${data[item]}</p>`;
+                    html += `<p class="${item}">${data[item]}</p>`;
                 });
 
                 element.innerHTML = html;
