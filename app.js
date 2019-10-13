@@ -42,13 +42,13 @@ app.get("/thestuff", (req, res) => {
 // @$(user), b3ck is currently in: $(eval '$(urlfetch http://<YOUR-IP-or-DNS>:3000/stats/citystate)'.replace(/\"/g,"");)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------
 app.get("/stats/citystate", async (req, res) => {
-	res.json(`${lastRequest.city}, ${lastRequest.state}`);
+	res.send(`${lastRequest.city}, ${lastRequest.state}`);
 });
 
 // Here will give you an endpoint for anything, such as; http://<YOUR-IP-or-DNS>:3000/stats/a (altitude) or /b (battery level) or /s (speed)
 // Basically any parameter you pass over in the GPS-Logger app.
 app.get("/stats/:anything", (req, res) => {
-	res.json(`${lastRequest[req.params.anything]}`);
+	res.send(`${lastRequest[req.params.anything]}`);
 });
 
 
@@ -100,6 +100,7 @@ const getTheStuff = (lat, lon) => {
 
 	getOpenWeatherMap(lat, lon, config.UNITS, config.OWM_Key);
 	getLocationIQ(lat, lon, config.LIQ_Key);
+	getOpenStreetMap(lat, lon);
 	getWeatherGov(lat, lon);
 }
 
@@ -139,7 +140,7 @@ const getWeatherGov = async (lat, lon) => {
 
 		// These will grab the current city/state you're in.
 		lastRequest.state = weathergov.properties.relativeLocation.properties.state
-		lastRequest.city = weathergov.properties.relativeLocation.properties.city
+		//lastRequest.city = weathergov.properties.relativeLocation.properties.city
 		
 		// This will grab the current time in 12 hour format based on your LON & LAT.
 		lastRequest.time = new Date().toLocaleTimeString("en-US", { timeZone: weathergov.properties.timeZone, hour: '2-digit', minute: '2-digit' });
@@ -147,6 +148,23 @@ const getWeatherGov = async (lat, lon) => {
 
 	} catch (error) {
 		console.log("getWeatherGov request failed or something.", error);
+	}
+}
+
+// OpenStreetMap
+const getOpenStreetMap = async (lat, lon) => {
+	try {
+		let data = await fetch(`https://nominatim.openstreetmap.org/reverse.php?format=jsonv2&lat=${lat}&lon=${lon}`);
+		let openstreetmap = await data.json();
+
+		if (openstreetmap.address.city != null) {
+			lastRequest.city = openstreetmap.address.city
+		} else {
+			lastRequest.city = openstreetmap.address.town
+		}
+		
+	} catch (error) {
+		console.log("getOpenStreetMap request failed or something.", error);
 	}
 }
 
