@@ -9,7 +9,8 @@ Once it's started go into the settings and turn everything off for logging besid
 - 1.) On your PC clone or download this GIT
 - 2.) Run the 'npm install --production.bat'
 - 3.) In order for all of the APIs to work you'll need to edit the `config.js`, links are in the config for the APIs.
-- 4.) Run 'npm start.bat' to start the gps-logger server
+- 4.) Open and Forward your ports, otherwise all of this won't work.
+- 5.) Run 'npm start.bat' to start the gps-logger server
 
 It should say something like this:
 
