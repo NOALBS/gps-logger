@@ -15,6 +15,7 @@ let waitForTheStuff = false; //really you don't want to touch this, like ever, i
 // This area gives the data a nice little home to stay in, if you add anything in the below functions make sure it ends up here.
 let lastRequest = {
 	city: "",
+	town: "",
 	state: "",
 	zipcode: "",
 	country: "",
@@ -99,8 +100,7 @@ const getTheStuff = (lat, lon) => {
 	}
 
 	getOpenWeatherMap(lat, lon, config.UNITS, config.OWM_Key);
-	getLocationIQ(lat, lon, config.LIQ_Key);
-	getOpenStreetMap(lat, lon);
+	getHEREdotcom(lat, lon, config.HERE_appid, config.HERE_appcode);
 	getWeatherGov(lat, lon);
 }
 
@@ -117,54 +117,37 @@ const getOpenWeatherMap = async (lat, lon, units, apikey) => {
 
 }
 
-// LocationIQ needs an API, please set this in the 'config.js' file.
-const getLocationIQ = async (lat, lon, apikey) => {
-	try {
-		let data = await fetch(`https://us1.locationiq.com/v1/reverse.php?key=${apikey}&lat=${lat}&lon=${lon}&format=json`);
-		let locationiq = await data.json();
-
-		// These will grab the current zipcode/country you're in.
-		lastRequest.zipcode = locationiq.address.postcode
-		lastRequest.country = locationiq.address.country_code
-		
-	} catch (error) {
-		console.log("getLocationIQ request failed or something.", error);
-	}
-}
-
 // Weather.gov needs no API Key. POGGERS
 const getWeatherGov = async (lat, lon) => {
 	try {
 		let data = await fetch(`https://api.weather.gov/points/${lat},${lon}`);
 		let weathergov = await data.json();
-
-		// These will grab the current city/state you're in.
-		lastRequest.state = weathergov.properties.relativeLocation.properties.state
-		//lastRequest.city = weathergov.properties.relativeLocation.properties.city
 		
 		// This will grab the current time in 12 hour format based on your LON & LAT.
 		lastRequest.time = new Date().toLocaleTimeString("en-US", { timeZone: weathergov.properties.timeZone, hour: '2-digit', minute: '2-digit' });
-
 
 	} catch (error) {
 		console.log("getWeatherGov request failed or something.", error);
 	}
 }
 
-// OpenStreetMap
-const getOpenStreetMap = async (lat, lon) => {
+// HERE.com ( https://developer.here.com/sign-up?create=Freemium-Basic&keepState=true&step=account )
+const getHEREdotcom = async (lat, lon, appid, appcode) => {
 	try {
-		let data = await fetch(`https://nominatim.openstreetmap.org/reverse.php?format=jsonv2&lat=${lat}&lon=${lon}`);
-		let openstreetmap = await data.json();
+		let data = await fetch(`https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${lat}%2C${lon}%2C250&mode=retrieveAll&maxresults=2&app_id=${appid}&app_code=${appcode}`);
+		let heredotcom = await data.json();
 
-		if (openstreetmap.address.city != null) {
-			lastRequest.city = openstreetmap.address.city
-		} else {
-			lastRequest.city = openstreetmap.address.town
-		}
-		
+		// Result [0]
+		lastRequest.town = heredotcom.Response.View[0].Result[0].Location.Address.City
+		lastRequest.zipcode = heredotcom.Response.View[0].Result[0].Location.Address.PostalCode
+
+		// Result [1]
+		lastRequest.city = heredotcom.Response.View[0].Result[1].Location.Address.City
+		lastRequest.state = heredotcom.Response.View[0].Result[1].Location.Address.State
+		lastRequest.country = heredotcom.Response.View[0].Result[1].Location.Address.Country
+
 	} catch (error) {
-		console.log("getOpenStreetMap request failed or something.", error);
+		console.log("getHEREdotcom request failed or something.", error);
 	}
 }
 
