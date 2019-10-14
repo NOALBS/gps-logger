@@ -15,10 +15,13 @@ let waitForTheStuff = false; //really you don't want to touch this, like ever, i
 // This area gives the data a nice little home to stay in, if you add anything in the below functions make sure it ends up here.
 let lastRequest = {
 	city: "",
+	city2: "",
 	town: "",
+	town2: "",
 	state: "",
 	zipcode: "",
 	country: "",
+	country2: "",
 	temp: "",
 	time: ""
 };
@@ -137,14 +140,26 @@ const getHEREdotcom = async (lat, lon, appid, appcode) => {
 		let data = await fetch(`https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${lat}%2C${lon}%2C250&mode=retrieveAll&maxresults=2&app_id=${appid}&app_code=${appcode}`);
 		let heredotcom = await data.json();
 
+		here_town = heredotcom.Response.View[0].Result[0].Location.Address.City
+		here_city = heredotcom.Response.View[0].Result[1].Location.Address.City
+		here_country = heredotcom.Response.View[0].Result[1].Location.Address.Country
+
+		if (here_town == here_city) {
+            lastRequest.town2 = ""
+        } else {
+            lastRequest.town2 = `${here_town} - `
+        }
+
 		// Result [0]
-		lastRequest.town = heredotcom.Response.View[0].Result[0].Location.Address.City
+		lastRequest.town = here_town
 		lastRequest.zipcode = heredotcom.Response.View[0].Result[0].Location.Address.PostalCode
 
 		// Result [1]
-		lastRequest.city = heredotcom.Response.View[0].Result[1].Location.Address.City
+		lastRequest.city = here_city
+		lastRequest.city2 = `${here_city}, `
 		lastRequest.state = heredotcom.Response.View[0].Result[1].Location.Address.State
 		lastRequest.country = heredotcom.Response.View[0].Result[1].Location.Address.Country
+		lastRequest.country2 = `- ${here_country}`
 
 	} catch (error) {
 		console.log("getHEREdotcom request failed or something.", error);
