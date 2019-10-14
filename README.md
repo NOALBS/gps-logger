@@ -1,4 +1,4 @@
-# gps-logger
+# gps-logger by 715209
 
 Download and install this on your android phone:
 https://github.com/mendhak/gpslogger/releases
