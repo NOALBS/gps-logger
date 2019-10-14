@@ -10,7 +10,10 @@ Once it's started go into the settings and turn everything off for logging besid
 - 2.) Run the 'npm install --production.bat'
 - 3.) In order for all of the APIs to work you'll need to edit the `config.js`, links are in the config for the APIs.
   > After signing up for HERE.com enable JS REST, and it will generate an 'APP ID' and 'APP CODE' this is what you want to use in the 'config.js' file.
-  See Reference Screenshot [HERE](https://i.imgur.com/74eEKEr.png)
+  
+  > ![WhereToClick](https://i.imgur.com/fntXNfV.png)
+  > then see Reference Screenshot [HERE](https://i.imgur.com/74eEKEr.png)
+
 - 4.) [Open and Forward your ports](https://www.noip.com/support/knowledgebase/general-port-forwarding-guide/), otherwise all of this won't work.
 - 5.) Run 'npm start.bat' to start the gps-logger server
 
