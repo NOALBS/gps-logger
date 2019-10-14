@@ -92,7 +92,7 @@
 
             socket.on("THESTUFF", data => {
                 html = "";
-				html += `<p class="name">${data.city}, ${data.state} - ${data.country}</p>`;
+		html += `<p class="name">${data.town} - ${data.city}, ${data.state} - ${data.country}</p>`;
                 html += `<p class="temp">${data.temp}&#176;F</p>`;
                 html += `<p class="time">${data.time}</p>`;
                 html += `<p class="postal">${data.zipcode}</p>`;
