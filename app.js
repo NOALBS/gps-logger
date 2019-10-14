@@ -159,7 +159,7 @@ const getHEREdotcom = async (lat, lon, appid, appcode) => {
 		lastRequest.city2 = `${here_city}, `
 		lastRequest.state = heredotcom.Response.View[0].Result[1].Location.Address.State
 		lastRequest.country = heredotcom.Response.View[0].Result[1].Location.Address.Country
-		lastRequest.country2 = `- ${here_country}`
+		lastRequest.country2 = ` - ${here_country}`
 
 	} catch (error) {
 		console.log("getHEREdotcom request failed or something.", error);
