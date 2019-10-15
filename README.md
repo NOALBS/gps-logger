@@ -11,12 +11,13 @@ Once it's started go into the settings and turn everything off for logging besid
 - 3.) In order for all of the APIs to work you'll need to edit the `config.js`, links are in the config for the APIs.
   > After signing up for HERE.com enable JS REST, and it will generate an 'APP ID' and 'APP CODE' this is what you want to use in the 'config.js' file.
   
-  > ![WhereToClick1](https://i.imgur.com/fntXNfV.png)
-  > ![WhereToClick2](https://i.imgur.com/74eEKEr.png)
+  > [Generate APP ID & APP CODE EXAMPLE](https://i.imgur.com/fntXNfV.png/)
+  
+  > [JS REST APP ID & APP CODE EXAMPLE](https://i.imgur.com/74eEKEr.png/)
 
 - 4.) [Open and Forward your ports](https://www.noip.com/support/knowledgebase/general-port-forwarding-guide/), otherwise all of this won't work.
 - 5.) Run 'npm start.bat' to start the gps-logger server
-
+  
 It should say something like this:
 
 ```
@@ -26,14 +27,14 @@ node app
 listening on *:3000
 ```
 
-Now browse to http://localhost:3000
-- or http://localhost:3000/stats/citystate
-- or http://localhost:3000/stats/a
-- or http://localhost:3000/stats/b
-
-etc.. etc..
+ > Now browse to http://localhost:3000
+ > - or http://localhost:3000/stats/citystate
+ > - or http://localhost:3000/stats/a
+ > - or http://localhost:3000/stats/b
 
 Now just pull whatever you want into your OBS Scene, and Bob's your uncle. :man:
+
+  > Please keep in mind I just left everything styled like I have it in my stream, to truly make it your own all it takes is a little tinkering with CSS.
 
 If you have any issues feel free to submit them here on GitHub.
 
