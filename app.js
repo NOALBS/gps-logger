@@ -144,8 +144,8 @@ const getHEREdotcom = async (lat, lon, appid, appcode) => {
 		here_city = heredotcom.Response.View[0].Result[1].Location.Address.City
 		here_country = heredotcom.Response.View[0].Result[1].Location.Address.Country
 
-		if (here_town == here_city) {
-            lastRequest.town2 = ""
+		if (here_town == 'undefined' || here_town == null || here_town == here_city) {
+			lastRequest.town2 = ""
         } else {
             lastRequest.town2 = `${here_town} - `
         }
@@ -156,7 +156,13 @@ const getHEREdotcom = async (lat, lon, appid, appcode) => {
 
 		// Result [1]
 		lastRequest.city = here_city
-		lastRequest.city2 = `${here_city}, `
+
+		if (here_city == 'undefined' || here_city == null) {
+			lastRequest.city2 = ""
+        } else {
+            lastRequest.city2 = `${here_city}, `
+        }
+
 		lastRequest.state = heredotcom.Response.View[0].Result[1].Location.Address.State
 		lastRequest.country = heredotcom.Response.View[0].Result[1].Location.Address.Country
 		lastRequest.country2 = ` - ${here_country}`
