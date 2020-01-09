@@ -60,7 +60,7 @@ app.use(function checkKey(req, res, next) {
 	const timestamp = formatAMPM(new Date);
 	const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
 	// console.log(timestamp, ip);
-	if (ip == "::ffff:127.0.0.1" || ip == "127.0.0.1" || ip == "localhost") {
+	if (ip == "::ffff:127.0.0.1" || ip == "127.0.0.1" || ip == "localhost" || ip == "::1") {
 		console.log(timestamp, ip, "- Access Granted")
 		next();
 	} else {
