@@ -77,10 +77,12 @@
                 font-family: 'SignPainter HouseScript' !important;
                 color: #fff !important;
                 font-size: 68px !important;
-                font-weight: 300 !important;
+                font-weight: 600 !important;
                 text-shadow: 2px 3px 2px rgba(0,0,0,0.75) !important;
             }
+
         </style>
+
     </head>
     <body>
         <div id="data"></div>
@@ -93,13 +95,18 @@
             socket.on("THESTUFF", data => {
                 html = "";
                 html += `<p class="name">${data.town2}${data.city2}${data.state}${data.country2}</p>`;
-		// html += `<p class="name">${data.town} - ${data.city}, ${data.state} - ${data.country}</p>`;
+				// html += `<p class="name">${data.town} - ${data.city}, ${data.state} - ${data.country}</p>`;
                 html += `<p class="temp">${data.temp}&#176;F</p>`;
                 html += `<p class="time">${data.time}</p>`;
                 html += `<p class="postal">${data.zipcode}</p>`;
-
+                html += `<p class="icon"><img src="${data.icon}"></p>`;
+                html += `<p class="postal">${data.lat}</p>`;
+                html += `<p class="postal">${data.lon}</p>`;
+    
                 element.innerHTML = html;
+
             });
         </script>
+
     </body>
 </html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>b3ck's Live MOD-Map for IRL v2</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+        html,
+        body {
+            background-color: #000;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            color: white;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        a {
+            color: #2c87f0;
+        }
+
+        a:visited {
+            color: #c33;
+        }
+
+        a:hover,
+        a:active,
+        a:focus {
+            color: rgb(31, 133, 10);
+        }
+
+        #map {
+            height: 100%;
+            position: relative;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        div.gmnoprint {
+            display: none !important;
+        }
+
+        #map [tabindex="0"]>div:first-child {
+            will-change: transform !important;
+        }
+
+        #map:after {
+            width: 57px;
+            height: 80px;
+            display: block;
+            content: ' ';
+            position: absolute;
+            top: 45%;
+            left: 48.8%;
+            margin: -40px 0 0 -11px;
+            background: url('https://b3ck.com/map/spotlight-poi_hdpi.png');
+            background-size: 57px 80px;
+            pointer-events: none;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
+</head>
+
+<body id="mapbody">
+
+    <div id="stats"></div>
+
+    <script>
+        const socketstats = io();
+        const element = document.getElementById("stats");
+
+        socketstats.on("THESTUFF", stats => {
+            html = "";
+            html += `<center>Location Name: ${stats.town2}${stats.city2}${stats.state}${stats.country2} ║ Temp: ${stats.temp}&#176;F ║ Time: ${stats.time} ║ GPS Coords: <a href="https://maps.google.com?q=${stats.lat},${stats.lon}" target="_blank">${stats.lat}, ${stats.lon}</a> ║ Altitude: ${stats.a} ║ Phone Battery: ${stats.b}%</center>`;
+            //html += `<br>`;
+            element.innerHTML = html;
+
+        });
+    </script>
+
+    <div id="map"></div>
+
+    <script>
+        const socket = io();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const myKey = urlParams.get('key');
+
+        function initMap() {
+            getMap();
+        }
+
+        const getMap = async () => {
+            try {
+
+                let customMapType = new google.maps.StyledMapType(style, {
+                    name: ""
+                });
+                let customMapTypeId = 'custom_style';
+
+                let map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 15,
+                    disableDefaultUI: true,
+                    backgroundColor: '#000',
+                    center: { lat: 44.9778, lng: -93.2650 }, // Center of Minneapolis, MN you can change this to your major city's lon/lat.
+                    mapTypeControlOptions: {
+                        mapTypeIds: [google.maps.MapTypeId.ROADMAP, customMapTypeId]
+                    }
+                });
+
+                socket.on("THESTUFF", data => {
+                    var latLng = new google.maps.LatLng(data.lat, data.lon); //new pan to lat & long location
+                    map.panTo(latLng);
+                });
+
+                map.mapTypes.set(customMapTypeId, customMapType);
+                map.setMapTypeId(customMapTypeId);
+
+            } catch (error) {
+                console.log("initMap request failed or something.", error);
+            }
+        }
+    </script>
+
+    <script>
+
+        window.onload = function () {
+            let data = fetch(`./stats/gapi?key=${myKey}`).then(function (response) {
+                return response.text().then(function (gapi) {
+
+                    console.log("gapi =", gapi);
+
+                    var newScript = document.createElement("script");
+                    newScript.src = `https://maps.googleapis.com/maps/api/js?key=${gapi}&callback=initMap`;
+                    document.getElementsByTagName('head')[0].appendChild(newScript);
+                });
+            });
+        };
+
+    </script>
+
+</body>
+
+</html>

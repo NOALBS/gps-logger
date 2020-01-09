@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>b3ck's Live Rotating-Map for IRL v2</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+        html,
+        body {
+            background-color: #000;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            color: white;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        a {
+            color: #2c87f0;
+        }
+
+        a:visited {
+            color: #c33;
+        }
+
+        a:hover,
+        a:active,
+        a:focus {
+            color: rgb(31, 133, 10);
+        }
+
+        #map {
+            height: 100%;
+            position: relative;
+            -webkit-transition: all 0.5s ease-in-out;
+            -moz-transition: all 0.5s ease-in-out;
+            -o-transition: all 0.5s ease-in-out;
+            transition: all 0.5s ease-in-out;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        div.gmnoprint {
+            display: none !important;
+        }
+
+        #map [tabindex="0"]>div:first-child {
+            will-change: transform !important;
+        }
+    </style>
+</head>
+
+<body id="mapbody">
+    <div id="map"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
+    <script>
+        const socket = io();
+
+        function initMap() {
+            getMap();
+        }
+
+        socket.on("THESTUFF", data => {
+            var rotated = false;
+
+            var div = document.getElementById('mapbody'),
+                deg = data.d;
+            if (deg == 0.0) return
+
+            div.style.webkitTransform = 'rotate(' + deg + 'deg)';
+            div.style.mozTransform = 'rotate(' + deg + 'deg)';
+            div.style.msTransform = 'rotate(' + deg + 'deg)';
+            div.style.oTransform = 'rotate(' + deg + 'deg)';
+            div.style.transform = 'rotate(' + deg + 'deg)';
+
+            rotated = !rotated;
+        });
+
+        const getMap = async () => {
+            try {
+
+                let data = await fetch(`./style`);
+                let style = await data.json();
+
+                let customMapType = new google.maps.StyledMapType(style, {
+                    name: ""
+                });
+                let customMapTypeId = 'custom_style';
+
+                let map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 18,
+                    disableDefaultUI: true,
+                    backgroundColor: '#000',
+                    mapTypeControlOptions: {
+                        mapTypeIds: [google.maps.MapTypeId.ROADMAP, customMapTypeId]
+                    }
+                });
+
+                socket.on("THESTUFF", data => {
+                    var latLng = new google.maps.LatLng(data.lat, data.lon);
+                    map.panTo(latLng);
+                });
+
+                map.mapTypes.set(customMapTypeId, customMapType);
+                map.setMapTypeId(customMapTypeId);
+
+            } catch (error) {
+                console.log("initMap request failed or something.", error);
+            }
+        }
+    </script>
+
+    <script>
+
+        window.onload = function () {
+            let data = fetch(`./stats/gapi?key=${myKey}`).then(function (response) {
+                return response.text().then(function (gapi) {
+
+                    console.log("gapi =", gapi);
+
+                    var newScript = document.createElement("script");
+                    newScript.src = `https://maps.googleapis.com/maps/api/js?key=${gapi}&callback=initMap`;
+                    document.getElementsByTagName('head')[0].appendChild(newScript);
+                });
+            });
+        };
+
+    </script>
+
+</body>
+
+</html>

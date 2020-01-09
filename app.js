@@ -7,10 +7,10 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const config = require("./config.js");
 const fetch = require("node-fetch");
+const geoTz = require('geo-tz');
 
 // Don't touch this!
 let waitForTheStuff = false; //really you don't want to touch this, like ever, if you do.. nothing will work... seriously.
-
 
 // This area gives the data a nice little home to stay in, if you add anything in the below functions make sure it ends up here.
 let lastRequest = {
@@ -23,8 +23,57 @@ let lastRequest = {
 	country: "",
 	country2: "",
 	temp: "",
-	time: ""
+	time: "",
+	direction: "",
+	gapi: ""
 };
+
+/////////////////
+// Timestamp Stuff //
+////////////////////////////////////////////////////////////////
+function formatAMPM(date) {
+	var month = ('0' + (date.getMonth() + 1)).slice(-2);
+	var day = ('0' + date.getDate()).slice(-2);
+	var year = date.getFullYear();
+	var hours = date.getHours();
+	var minutes = date.getMinutes();
+	var seconds = date.getSeconds();
+	var ampm = hours >= 12 ? 'PM' : 'AM';
+	hours = hours % 12;
+	hours = hours ? hours : 12; // the hour '0' should be '12'
+	minutes = minutes < 10 ? '0'+minutes : minutes;
+	seconds = seconds < 10 ? '0'+seconds : seconds;
+	var strTime = month + '/' + day + '/' + year + ' - ' + hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+	return strTime;
+}
+////////////////////////////////////////////////////////////////
+
+// Map Style Stuff
+mapstyle = config.MAPSTYLE + '.json';
+
+// Google Map API Stuff
+lastRequest.gapi = config.GOOGLEAPI
+
+// Unqiue Code Stuff
+app.use(function checkKey(req, res, next) {
+
+	const timestamp = formatAMPM(new Date);
+	const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+	// console.log(timestamp, ip);
+	if (ip == "::ffff:127.0.0.1" || ip == "127.0.0.1" || ip == "localhost") {
+		console.log(timestamp, ip, "- Access Granted")
+		next();
+	} else {
+		if (req.query.key != config.UNIQUE_CODE) {
+			console.log(timestamp, ip, "- Access Denied")
+			res.sendStatus(401);
+		} else {
+			console.log(timestamp, ip, "- Access Granted")
+			next();
+		}
+	}
+
+});
 
 // Log output page
 app.get("/", (req, res) => {
@@ -34,6 +83,30 @@ app.get("/", (req, res) => {
 // The stuff output page
 app.get("/thestuff", (req, res) => {
 	res.sendFile(__dirname + "/the_stuff.html");
+});
+
+// The Google Maps output page
+app.get("/map", (req, res) => {
+	res.sendFile(__dirname + "/map.html");
+});
+
+// The Google Maps output page
+app.get("/map_rotate", (req, res) => {
+	res.sendFile(__dirname + "/map_rotate.html");
+});
+
+// The way to get map style
+app.get("/style", (req, res) => {
+	res.sendFile(__dirname + "/map_styles/" + mapstyle);
+});
+
+// The way to get default map style
+app.get("/default", (req, res) => {
+	res.sendFile(__dirname + "/map_styles/default.json");
+});
+
+app.get("/mod_map", (req, res) => {
+	res.sendFile(__dirname + "/mod_map.html");
 });
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -55,9 +128,10 @@ app.get("/stats/:anything", (req, res) => {
 	res.send(`${lastRequest[req.params.anything]}`);
 });
 
-
-// My Custom URL in GPS-Logger looks like this: http://<YOUR-IP-or-DNS>:3000/log?s=%SPD&b=%BATT&lat=%LAT&lon=%LON&a=%ALT
+// My Custom URL in GPS-Logger looks like this: http://<YOUR-IP-or-DNS>:3000/log?s=%SPD&b=%BATT&lat=%LAT&lon=%LON&a=%ALT&key=<UNIQUE_CODE>
 app.get("/log", (req, res) => {
+
+	delete req.query.key;
 
 	//Current Altitude (FT) - a=%ALT
 	if (req.query.a) {
@@ -82,6 +156,8 @@ app.get("/log", (req, res) => {
 	if (req.query.lat && req.query.lon) {
 		const { lat, lon } = req.query;
 
+		lastRequest.time = new Date().toLocaleTimeString("en-US", { timeZone: geoTz(lat, lon)[0], hour: '2-digit', minute: '2-digit' });
+
 		!waitForTheStuff && getTheStuff(lat, lon);
 		io.emit("THESTUFF", lastRequest);
 
@@ -104,7 +180,12 @@ const getTheStuff = (lat, lon) => {
 
 	getOpenWeatherMap(lat, lon, config.UNITS, config.OWM_Key);
 	getHEREdotcom(lat, lon, config.HERE_appid, config.HERE_appcode);
-	getWeatherGov(lat, lon);
+}
+
+const degToCompass = (num) => {
+	let val = Math.floor((num / 22.5) + 0.5);
+	let arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+	return arr[(val % 16)];
 }
 
 // OpenWeatherMap needs an API, please set this in the 'config.js' file.
@@ -113,25 +194,16 @@ const getOpenWeatherMap = async (lat, lon, units, apikey) => {
 		let data = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${units}&appid=${apikey}`);
 		let openweathermap = await data.json();
 
+		icon = openweathermap.weather[0].icon
+
+		lastRequest.icon = `http://openweathermap.org/img/wn/${icon}@2x.png`
+
+		lastRequest.direction = degToCompass(openweathermap.wind.deg)
 		lastRequest.temp = Math.floor(openweathermap.main.temp)
 	} catch (error) {
 		console.log("getOpenWeatherMap request failed or something.", error);
 	}
 
-}
-
-// Weather.gov needs no API Key. POGGERS
-const getWeatherGov = async (lat, lon) => {
-	try {
-		let data = await fetch(`https://api.weather.gov/points/${lat},${lon}`);
-		let weathergov = await data.json();
-		
-		// This will grab the current time in 12 hour format based on your LON & LAT.
-		lastRequest.time = new Date().toLocaleTimeString("en-US", { timeZone: weathergov.properties.timeZone, hour: '2-digit', minute: '2-digit' });
-
-	} catch (error) {
-		console.log("getWeatherGov request failed or something.", error);
-	}
 }
 
 // HERE.com ( https://developer.here.com/sign-up?create=Freemium-Basic&keepState=true&step=account )
@@ -144,10 +216,15 @@ const getHEREdotcom = async (lat, lon, appid, appcode) => {
 		here_city = heredotcom.Response.View[0].Result[1].Location.Address.City
 		here_country = heredotcom.Response.View[0].Result[1].Location.Address.Country
 
-		if (here_town == 'undefined' || here_town == null || here_town == here_city) {
-			lastRequest.town2 = ""
+		// I wanted to customize certain city names, so this is how I did it.
+        if (here_town == "Coon Rapids") {
+			lastRequest.town2 = "( Raccoon City ) - "
+        } else if (here_town == "Fridley") {
+			lastRequest.town2 = "( Friendly Fridley ) - "
+        } else if (here_town == null || here_town == 'undefined' || here_town == here_city) {
+            lastRequest.town2 = ""
         } else {
-            lastRequest.town2 = `${here_town} - `
+            lastRequest.town2 = `( ${here_town} ) - `
         }
 
 		// Result [0]
@@ -157,11 +234,11 @@ const getHEREdotcom = async (lat, lon, appid, appcode) => {
 		// Result [1]
 		lastRequest.city = here_city
 
-		if (here_city == 'undefined' || here_city == null) {
+		if (here_city == null || here_town == 'undefined') {
 			lastRequest.city2 = ""
-        } else {
-            lastRequest.city2 = `${here_city}, `
-        }
+		} else {
+			lastRequest.city2 = `${here_city}, `
+		}
 
 		lastRequest.state = heredotcom.Response.View[0].Result[1].Location.Address.State
 		lastRequest.country = heredotcom.Response.View[0].Result[1].Location.Address.Country
