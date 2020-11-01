@@ -18,6 +18,8 @@ let lastRequest = {
 	city2: "",
 	town: "",
 	town2: "",
+	//Added street - Peaced_old
+	street: "",
 	state: "",
 	zipcode: "",
 	country: "",
@@ -85,6 +87,12 @@ app.get("/thestuff", (req, res) => {
 	res.sendFile(__dirname + "/the_stuff.html");
 });
 
+//Added to add my own stuff - Peaced_old
+// The stuff2 output page
+app.get("/thestuff2", (req, res) => {
+	res.sendFile(__dirname + "/the_stuff2.html");
+});
+
 // The Google Maps output page
 app.get("/map", (req, res) => {
 	res.sendFile(__dirname + "/map.html");
@@ -135,12 +143,12 @@ app.get("/log", (req, res) => {
 
 	//Current Altitude (FT) - a=%ALT
 	if (req.query.a) {
-		req.query.a = `${Math.round(req.query.a / 0.3048)} FT`;
+		req.query.a = `${Math.round(req.query.a)} M`;
 	}
 
 	// Current Speed (MPH) - s=%SPD
 	if (req.query.s) {
-		req.query.s = `${Math.floor(req.query.s * 2.23694)} MPH`;
+		req.query.s = `${Math.floor(req.query.s)} KMH`;
 	}
 
 	// Current Battery Level (Phone Estimated) - b=%BATT
@@ -209,12 +217,20 @@ const getOpenWeatherMap = async (lat, lon, units, apikey) => {
 // HERE.com ( https://developer.here.com/sign-up?create=Freemium-Basic&keepState=true&step=account )
 const getHEREdotcom = async (lat, lon, appid, appcode) => {
 	try {
-		let data = await fetch(`https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${lat}%2C${lon}%2C250&mode=retrieveAll&maxresults=2&app_id=${appid}&app_code=${appcode}`);
+		//Changed URL : appcode is now api key - Peaced_old
+			//let data = await fetch(`https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${lat}%2C${lon}%2C250&mode=retrieveAll&maxresults=2&app_id=${appid}&app_code=${appcode}`);
+		let data = await fetch(`https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat}%2C${lon}&lang=en-US&app_id=${appid}&apikey=${appcode}`);
+
 		let heredotcom = await data.json();
 
-		here_town = heredotcom.Response.View[0].Result[0].Location.Address.City
-		here_city = heredotcom.Response.View[0].Result[1].Location.Address.City
-		here_country = heredotcom.Response.View[0].Result[1].Location.Address.Country
+		//Changed to match fetched JSON data and added title for full location - Peaced_old
+			//here_town = heredotcom.Response.View[0].Result[0].Location.Address.City
+			//here_city = heredotcom.Response.View[0].Result[1].Location.Address.City
+			//here_country = heredotcom.Response.View[0].Result[1].Location.Address.Country
+		here_title = heredotcom.items[0].title
+		here_town = heredotcom.items[0].address.city
+		here_city = heredotcom.items[0].address.city
+		here_country = heredotcom.items[0].address.countryCode
 
 		// I wanted to customize certain city names, so this is how I did it.
         if (here_town == "Coon Rapids") {
@@ -229,9 +245,13 @@ const getHEREdotcom = async (lat, lon, appid, appcode) => {
 
 		// Result [0]
 		lastRequest.town = here_town
-		lastRequest.zipcode = heredotcom.Response.View[0].Result[0].Location.Address.PostalCode
+		
+		//Changed to match fetched JSON data - Peaced_old
+			//lastRequest.zipcode = heredotcom.Response.View[0].Result[0].Location.Address.PostalCode		
+		lastRequest.zipcode = heredotcom.items[0].address.postalCode
 
 		// Result [1]
+		
 		lastRequest.city = here_city
 
 		if (here_city == null || here_town == 'undefined') {
@@ -240,8 +260,15 @@ const getHEREdotcom = async (lat, lon, appid, appcode) => {
 			lastRequest.city2 = `${here_city}, `
 		}
 
-		lastRequest.state = heredotcom.Response.View[0].Result[1].Location.Address.State
-		lastRequest.country = heredotcom.Response.View[0].Result[1].Location.Address.Country
+		//Changed to match fetched JSON data - Peaced_old
+			//lastRequest.state = heredotcom.Response.View[0].Result[1].Location.Address.State
+			//lastRequest.country = heredotcom.Response.View[0].Result[1].Location.Address.Country
+			//lastRequest.country2 = ` - ${here_country}`
+			//Added title and street - Peaced_old
+		lastRequest.state = heredotcom.items[0].address.stateCode
+		lastRequest.title = heredotcom.items[0].title
+		lastRequest.street = heredotcom.items[0].address.street
+		lastRequest.country = heredotcom.items[0].address.country
 		lastRequest.country2 = ` - ${here_country}`
 
 	} catch (error) {
