@@ -1,4 +1,4 @@
-# UPDATE: If you are using GPS logger to show the city, state, etc.. on your overlay use the modified APP.JS in the /peaced folder. 
+# UPDATE: If you are using GPS logger to show the city, state, etc.. on your overlay use the modified APP.JS in the /peaced folder. >> appcode is now the apkikey
 
 ## gps-logger by 715209
 ## live-map by b3ck
