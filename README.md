@@ -1,7 +1,5 @@
-# UPDATE: If you are using GPS logger to show the city, state, etc.. on your overlay use the modified APP.JS in the /peaced folder. >> appcode is now the apkikey
-
-## gps-logger by 715209
-## live-map by b3ck
+# gps-logger by 715209
+# live-map by b3ck
 
 Download and install this on your android phone:
 https://github.com/mendhak/gpslogger/releases
@@ -12,11 +10,9 @@ Once it's started go into the settings and turn everything off for logging besid
 - 1.) On your PC clone or download this GIT
 - 2.) Run the 'npm install --production.bat'
 - 3.) In order for all of the APIs to work you'll need to edit the `config.js`, links are in the config for the APIs.
-  > After signing up for HERE.com enable JS REST, and it will generate an 'APP ID' and 'APP CODE' this is what you want to use in the 'config.js' file.
+  > After signing up for HERE.com enable REST, and it will generate an 'APP ID', click the `Create API key` button this is what you want to use in the 'config.js' file.
   
-  > [Generate APP ID & APP CODE EXAMPLE](https://i.imgur.com/fntXNfV.png/)
-  
-  > [JS REST APP ID & APP CODE EXAMPLE](https://i.imgur.com/74eEKEr.png/)
+  > [Generate APP ID & API KEY (APP CODE) EXAMPLE](https://i.imgur.com/Na3tXPo.png/)
 
 - 4.) Also in the `config.js` is a section for a 'UNIQUE_CODE', if you want to protect access to the GPS-LOGGER either generate it or put in your own code, if not then leave it blank;
 
@@ -62,7 +58,7 @@ Now just pull whatever you want into your OBS Scene, and Bob's your uncle. :man:
 
   > Please keep in mind I just left everything styled like I have it in my stream, to truly make it your own all it takes is a little tinkering with CSS.
 
-If you have any issues feel free to submit them here on GitHub, or message me on Discord.
+If you have any issues feel free to submit them here on GitHub, or message me on Discord @ b3ck#3517.
 - To see it in action check out my livestream or VODs @ https://twitch.tv/b3ck
 
 
