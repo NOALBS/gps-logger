@@ -12,7 +12,9 @@ Once it's started go into the settings and turn everything off for logging besid
 - 3.) In order for all of the APIs to work you'll need to edit the `config.js`, links are in the config for the APIs.
   > After signing up for HERE.com enable REST, and it will generate an 'APP ID', click the `Create API key` button this is what you want to use in the 'config.js' file.
   
-  > [Generate APP ID & API KEY (APP CODE) EXAMPLE](https://i.imgur.com/Na3tXPo.png/)
+  > [Generate APP ID & API KEY EXAMPLE](https://i.imgur.com/GQGnoWU.png/)
+  
+  [![Generate APP ID & API KEY EXAMPLE](https://i.imgur.com/GQGnoWU.png/)](https://i.imgur.com/GQGnoWU.png/)
 
 - 4.) Also in the `config.js` is a section for a 'UNIQUE_CODE', if you want to protect access to the GPS-LOGGER either generate it or put in your own code, if not then leave it blank;
 
