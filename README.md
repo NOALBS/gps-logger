@@ -49,6 +49,12 @@ listening on *:3000
  > - http://localhost:3000/map
  > - > is your regular map
 
+ > - http://localhost:3000/thestuff
+ > - > is a bunch of information set to auto refresh when new data comes in, good for OBS overlays.
+
+ > - http://localhost:3000/map
+ > - > is your regular map
+
  > - http://localhost:3000/map_rotate
  > - > is a basic attempt to make the map rotate depending on your current direction, you will need to add &d=%DIR to your Custom URL in the GPS-LOGGER app on your phone, before the UNIQUE-CODE. ```ex; http://<YOUR-IP-or-DNS>:<PORT>/log?s=%SPD&b=%BATT&lat=%LAT&lon=%LON&a=%ALT&d=%DIR&key=<UNIQUE_CODE>```
 
