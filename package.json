@@ -21,7 +21,7 @@
         "express": "^4.16.4",
         "geo-tz": "^5.0.5",
         "node-fetch": "^2.6.1",
-        "socket.io": "^2.2.0"
+        "socket.io": "^2.4.0"
     },
     "devDependencies": {
         "@babel/core": "^7.6.4",
