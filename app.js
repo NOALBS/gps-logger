@@ -155,15 +155,27 @@ app.get("/stats/:anything", (req, res) => {
 // My Custom URL in GPS-Logger looks like this: http://<YOUR-IP-or-DNS>:3000/log?s=%SPD&b=%BATT&lat=%LAT&lon=%LON&a=%ALT&key=<UNIQUE_CODE>
 app.get("/log", (req, res) => {
   delete req.query.key;
+  
+  //IMPERIAL STUFF
+  //Current Altitude (FT) - a=%ALT
+	//if (req.query.a) {
+	//	req.query.a = `${Math.round(req.query.a / 0.3048)} FT`;
+	//}
 
+	// Current Speed (MPH) - s=%SPD
+	//if (req.query.s) {
+	//	req.query.s = `${Math.floor(req.query.s * 2.23694)} MPH`;
+	//}
+
+  //METRIC STUFF
   //Current Altitude (FT) - a=%ALT
   if (req.query.a) {
     req.query.a = `${Math.round(req.query.a)} M`;
   }
 
-  // Current Speed (MPH) - s=%SPD
+  // Current Speed (km/h) - s=%SPD
   if (req.query.s) {
-    req.query.s = `${Math.floor(req.query.s)} KMH`;
+    req.query.s = `${Math.floor(req.query.s)} km/h`;
   }
 
   // Current Battery Level (Phone Estimated) - b=%BATT
