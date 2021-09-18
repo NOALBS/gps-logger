@@ -26,7 +26,7 @@ const OWM_Key = '<YOUR-OPENWEATHERMAP-KEY>';
 const HERE_appid = '<YOUR-HERE-APP-ID>';
 
 // Get APIKEY from => https://developer.here.com/sign-up?create=Freemium-Basic&keepState=true&step=account
-const HERE_apikey = '<YOUR-HERE-APIKEY>';
+const HERE_appcode = '<YOUR-HERE-APPCODE>';
 
 // Create or Download a map style from => https://SnazzyMaps.com/Explore and save it as a .json in the maps_style folder,
 // For example you create a style save it as my_style.json you would put 'my_style' below.
@@ -37,6 +37,6 @@ const MAPSTYLE = 'style_dark';
 // but don't worry Google provides a set free credit amount every month, using just this should never make you go over that amount, like ever.
 const GOOGLEAPI = '<YOUR-GOOGLE-MAPS-JAVASCRIPT-API>';
 
-exports.PORT = PORT, exports.UNIQUE_CODE = UNIQUE_CODE, exports.RATELIMIT = RATELIMIT, exports.UNITS = UNITS, exports.OWM_Key = OWM_Key, exports.HERE_appid = HERE_appid, exports.HERE_apikey = HERE_apikey, exports.MAPSTYLE = MAPSTYLE, exports.GOOGLEAPI = GOOGLEAPI;
+exports.PORT = PORT, exports.UNIQUE_CODE = UNIQUE_CODE, exports.RATELIMIT = RATELIMIT, exports.UNITS = UNITS, exports.OWM_Key = OWM_Key, exports.HERE_appid = HERE_appid, exports.HERE_appcode = HERE_appcode, exports.MAPSTYLE = MAPSTYLE, exports.GOOGLEAPI = GOOGLEAPI;
 
 //# sourceMappingURL=index.js.map
