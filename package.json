@@ -20,7 +20,7 @@
     "dependencies": {
         "express": "^4.16.4",
         "geo-tz": "^5.0.5",
-        "node-fetch": "^2.6.1",
+        "node-fetch": "^3.1.1",
         "socket.io": "^2.2.0"
     },
     "devDependencies": {
