@@ -235,64 +235,63 @@ const getOpenWeatherMap = async (lat, lon, units, apikey) => {
 // HERE.com ( https://developer.here.com/sign-up?create=Freemium-Basic&keepState=true&step=account )
 const getHEREdotcom = async (lat, lon, appid, appcode) => {
     try {
-        //Changed URL : appcode is now api key - Peaced_old
-        //let data = await fetch(`https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${lat}%2C${lon}%2C250&mode=retrieveAll&maxresults=2&app_id=${appid}&app_code=${appcode}`);
         let data = await fetch(`https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat}%2C${lon}&lang=en-US&app_id=${appid}&apikey=${appcode}`);
-
         let heredotcom = await data.json();
 
-        //Changed to match fetched JSON data and added title for full location - Peaced_old
-        //here_town = heredotcom.Response.View[0].Result[0].Location.Address.City
-        //here_city = heredotcom.Response.View[0].Result[1].Location.Address.City
-        //here_country = heredotcom.Response.View[0].Result[1].Location.Address.Country
-        here_title = heredotcom.items[0].title
-        here_town = heredotcom.items[0].address.city
-        here_city = heredotcom.items[0].address.city
-        here_country = heredotcom.items[0].address.county
+        const title = heredotcom.items[0].title;
 
-        // I wanted to customize certain city names, so this is how I did it.
-        if (here_town == "Coon Rapids") {
-            lastRequest.town2 = "( Raccoon City ) - "
-        } else if (here_town == "Fridley") {
-            lastRequest.town2 = "( Friendly Fridley ) - "
-        } else if (here_town == null || here_town == 'undefined' || here_town == here_city) {
-            lastRequest.town2 = ""
-        } else {
-            lastRequest.town2 = `( ${here_town} ) - `
-        }
+        // Updated part
+        const titleParts = title.split(',');
+        const lastPart = titleParts[titleParts.length - 1].trim();
+        const country = lastPart;
+        const countryCodeMapping = {
+            "Netherlands": "NL",
+            "United States": "US",
+            "United Kingdom": "GB",
+            "Canada": "CA",
+            "Germany": "DE",
+            "France": "FR",
+            "Italy": "IT",
+            "Spain": "ES",
+            "Japan": "JP",
+            "China": "CN",
+            "India": "IN",
+            "Brazil": "BR",
+            "Russia": "RU",
+            "Australia": "AU",
+            "South Korea": "KR",
+            "Mexico": "MX",
+            "South Africa": "ZA",
+            "Nigeria": "NG",
+            "Argentina": "AR",
+            "Turkey": "TR",
+            "Saudi Arabia": "SA",
+            "Sweden": "SE",
+            "Norway": "NO",
+            "Finland": "FI",
+            "Croatia": "HR",
+            // Add other countries and their respective code if needed.
+          };
+          
+        const countryCode = countryCodeMapping[country] || country; // Use country code when possible, otherwise fallback on the full name.
 
-        // Result [0]
-        lastRequest.town = here_town
+        lastRequest.country = country;
+        lastRequest.countryCode = countryCode;
 
-        //Changed to match fetched JSON data - Peaced_old
-        //lastRequest.zipcode = heredotcom.Response.View[0].Result[0].Location.Address.PostalCode		
-        lastRequest.zipcode = heredotcom.items[0].address.postalCode
+        // Part of the original code
+        lastRequest.title = title;
+        lastRequest.street = heredotcom.items[0].address.street;
+        lastRequest.city = heredotcom.items[0].address.city;
+        lastRequest.zipcode = heredotcom.items[0].address.postalCode;
+        lastRequest.state = heredotcom.items[0].address.state;
+        lastRequest.country2 = ` - ${heredotcom.items[0].address.country}`;
 
-        // Result [1]
-
-        lastRequest.city = here_city
-
-        if (here_city == null || here_town == 'undefined') {
-            lastRequest.city2 = ""
-        } else {
-            lastRequest.city2 = `${here_city}, `
-        }
-
-        //Changed to match fetched JSON data - Peaced_old
-        //lastRequest.state = heredotcom.Response.View[0].Result[1].Location.Address.State
-        //lastRequest.country = heredotcom.Response.View[0].Result[1].Location.Address.Country
-        //lastRequest.country2 = ` - ${here_country}`
-        //Added title and street - Peaced_old
-        lastRequest.state = heredotcom.items[0].address.state
-        lastRequest.title = heredotcom.items[0].title
-        lastRequest.street = heredotcom.items[0].address.street
-        lastRequest.country = heredotcom.items[0].address.country
-        lastRequest.country2 = ` - ${here_country}`
 
     } catch (error) {
         console.log("getHEREdotcom request failed or something.", error);
     }
 }
+
 
 //don't touch this either =p
 http.listen(config.PORT, () => {
