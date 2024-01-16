@@ -2,18 +2,18 @@
 <html>
 
 <head>
-    <title>b3ck's Live Map for IRL v2</title>
+    <title>FakeStreamer_ Map - IRL</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <style>
         html,
         body {
-            background-color: #000;
+            background-color: #181818;
             height: 100%;
             margin: 0;
             padding: 0;
-            color: white;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            color: #F4F4F4;
+            font-family: 'Inter', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
 
         a {
@@ -48,7 +48,7 @@
         }
 
         #map:after {
-            width: 57px;
+            width: 44px;
             height: 80px;
             display: block;
             content: ' ';
@@ -56,10 +56,11 @@
             top: 45%;
             left: 48.8%;
             margin: -40px 0 0 -11px;
-            background: url('https://b3ck.com/map/spotlight-poi_hdpi.png');
-            background-size: 57px 80px;
+            background: url('https://fakestreamer.nl/wp-content/uploads/2024/01/current_location.png');
+            background-size: 44px 80px;
             pointer-events: none;
         }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
@@ -92,7 +93,7 @@
                     zoom: 15,
                     disableDefaultUI: true,
                     backgroundColor: '#000',
-                    center: { lat: 44.9778, lng: -93.2650 }, // Center of Minneapolis, MN you can change this to your major city's lon/lat.
+                    center: { lat: 51.9244, lng: 4.4777 }, // Center of Minneapolis, MN you can change this to your major city's lon/lat.
                     mapTypeControlOptions: {
                         mapTypeIds: [google.maps.MapTypeId.ROADMAP, customMapTypeId]
                     }

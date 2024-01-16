@@ -235,64 +235,278 @@ const getOpenWeatherMap = async (lat, lon, units, apikey) => {
 // HERE.com ( https://developer.here.com/sign-up?create=Freemium-Basic&keepState=true&step=account )
 const getHEREdotcom = async (lat, lon, appid, appcode) => {
     try {
-        //Changed URL : appcode is now api key - Peaced_old
-        //let data = await fetch(`https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${lat}%2C${lon}%2C250&mode=retrieveAll&maxresults=2&app_id=${appid}&app_code=${appcode}`);
         let data = await fetch(`https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat}%2C${lon}&lang=en-US&app_id=${appid}&apikey=${appcode}`);
-
         let heredotcom = await data.json();
 
-        //Changed to match fetched JSON data and added title for full location - Peaced_old
-        //here_town = heredotcom.Response.View[0].Result[0].Location.Address.City
-        //here_city = heredotcom.Response.View[0].Result[1].Location.Address.City
-        //here_country = heredotcom.Response.View[0].Result[1].Location.Address.Country
-        here_title = heredotcom.items[0].title
-        here_town = heredotcom.items[0].address.city
-        here_city = heredotcom.items[0].address.city
-        here_country = heredotcom.items[0].address.county
+        const title = heredotcom.items[0].title;
 
-        // I wanted to customize certain city names, so this is how I did it.
-        if (here_town == "Coon Rapids") {
-            lastRequest.town2 = "( Raccoon City ) - "
-        } else if (here_town == "Fridley") {
-            lastRequest.town2 = "( Friendly Fridley ) - "
-        } else if (here_town == null || here_town == 'undefined' || here_town == here_city) {
-            lastRequest.town2 = ""
-        } else {
-            lastRequest.town2 = `( ${here_town} ) - `
-        }
+        // Updated part
+        const titleParts = title.split(',');
+        const lastPart = titleParts[titleParts.length - 1].trim();
+        const country = lastPart;
+        const countryCodeMapping = {
+            "Netherlands": "NL",
+            "United States": "US",
+            "United Kingdom": "GB",
+            "Canada": "CA",
+            "Germany": "DE",
+            "France": "FR",
+            "Italy": "IT",
+            "Spain": "ES",
+            "Japan": "JP",
+            "China": "CN",
+            "India": "IN",
+            "Brazil": "BR",
+            "Russia": "RU",
+            "Australia": "AU",
+            "South Korea": "KR",
+            "Mexico": "MX",
+            "South Africa": "ZA",
+            "Nigeria": "NG",
+            "Argentina": "AR",
+            "Turkey": "TR",
+            "Saudi Arabia": "SA",
+            "Sweden": "SE",
+            "Norway": "NO",
+            "Finland": "FI",
+            "Croatia": "HR",
+            "Austria": "AT",
+            "Belgium": "BE",
+            "Greece": "GR",
+            "Switzerland": "CH",
+            "Portugal": "PT",
+            "Denmark": "DK",
+            "Ireland": "IE",
+            "Poland": "PL",
+            "Hungary": "HU",
+            "Czech Republic": "CZ",
+            "Romania": "RO",
+            "Bulgaria": "BG",
+            "Netherlands Antilles": "AN",
+            "New Zealand": "NZ",
+            "Norfolk Island": "NF",
+            "Niue": "NU",
+            "Nauru": "NR",
+            "Vanuatu": "VU",
+            "Wallis and Futuna": "WF",
+            "Fiji": "FJ",
+            "Tuvalu": "TV",
+            "Papua New Guinea": "PG",
+            "Solomon Islands": "SB",
+            "Norfolk Island": "NF",
+            "Niue": "NU",
+            "Nauru": "NR",
+            "Vanuatu": "VU",
+            "Wallis and Futuna": "WF",
+            "Fiji": "FJ",
+            "Tuvalu": "TV",
+            "Papua New Guinea": "PG",
+            "Solomon Islands": "SB",
+            "Tuvalu": "TV",
+            "Kiribati": "KI",
+            "Palau": "PW",
+            "Marshall Islands": "MH",
+            "Micronesia": "FM",
+            "Samoa": "WS",
+            "Tonga": "TO",
+            "Cook Islands": "CK",
+            "French Polynesia": "PF",
+            "New Caledonia": "NC",
+            "Antarctica": "AQ",
+            "Greenland": "GL",
+            "Faroe Islands": "FO",
+            "Iceland": "IS",
+            "Luxembourg": "LU",
+            "Monaco": "MC",
+            "San Marino": "SM",
+            "Vatican City": "VA",
+            "Cyprus": "CY",
+            "Estonia": "EE",
+            "Latvia": "LV",
+            "Lithuania": "LT",
+            "Malta": "MT",
+            "Slovakia": "SK",
+            "Slovenia": "SI",
+            "Moldova": "MD",
+            "Ukraine": "UA",
+            "Belarus": "BY",
+            "Albania": "AL",
+            "Bosnia and Herzegovina": "BA",
+            "North Macedonia": "MK",
+            "Montenegro": "ME",
+            "Serbia": "RS",
+            "Kosovo": "XK",
+            "Andorra": "AD",
+            "Liechtenstein": "LI",
+            "Jersey": "JE",
+            "Guernsey": "GG",
+            "Isle of Man": "IM",
+            "Algeria": "DZ",
+            "Angola": "AO",
+            "Benin": "BJ",
+            "Botswana": "BW",
+            "Burkina Faso": "BF",
+            "Burundi": "BI",
+            "Cape Verde": "CV",
+            "Cameroon": "CM",
+            "Central African Republic": "CF",
+            "Chad": "TD",
+            "Comoros": "KM",
+            "Congo (Congo-Brazzaville)": "CG",
+            "Congo (Congo-Kinshasa)": "CD",
+            "Djibouti": "DJ",
+            "Egypt": "EG",
+            "Equatorial Guinea": "GQ",
+            "Eritrea": "ER",
+            "Eswatini (fmr. 'Swaziland')": "SZ",
+            "Ethiopia": "ET",
+            "Gabon": "GA",
+            "Gambia": "GM",
+            "Ghana": "GH",
+            "Guinea": "GN",
+            "Guinea-Bissau": "GW",
+            "Ivory Coast": "CI",
+            "Kenya": "KE",
+            "Lesotho": "LS",
+            "Liberia": "LR",
+            "Libya": "LY",
+            "Madagascar": "MG",
+            "Malawi": "MW",
+            "Mali": "ML",
+            "Mauritania": "MR",
+            "Mauritius": "MU",
+            "Morocco": "MA",
+            "Mozambique": "MZ",
+            "Namibia": "NA",
+            "Niger": "NE",
+            "Nigeria": "NG",
+            "Rwanda": "RW",
+            "Sao Tome and Principe": "ST",
+            "Senegal": "SN",
+            "Seychelles": "SC",
+            "Sierra Leone": "SL",
+            "Somalia": "SO",
+            "South Sudan": "SS",
+            "Sudan": "SD",
+            "Tanzania": "TZ",
+            "Togo": "TG",
+            "Tunisia": "TN",
+            "Uganda": "UG",
+            "Zambia": "ZM",
+            "Zimbabwe": "ZW",
+            "Afghanistan": "AF",
+            "Armenia": "AM",
+            "Azerbaijan": "AZ",
+            "Bahrain": "BH",
+            "Bangladesh": "BD",
+            "Bhutan": "BT",
+            "Brunei": "BN",
+            "Cambodia": "KH",
+            "China": "CN",
+            "Cyprus": "CY",
+            "Georgia": "GE",
+            "India": "IN",
+            "Indonesia": "ID",
+            "Iran": "IR",
+            "Iraq": "IQ",
+            "Israel": "IL",
+            "Japan": "JP",
+            "Jordan": "JO",
+            "Kazakhstan": "KZ",
+            "Kuwait": "KW",
+            "Kyrgyzstan": "KG",
+            "Laos": "LA",
+            "Lebanon": "LB",
+            "Malaysia": "MY",
+            "Maldives": "MV",
+            "Mongolia": "MN",
+            "Myanmar (formerly Burma)": "MM",
+            "Nepal": "NP",
+            "North Korea": "KP",
+            "Oman": "OM",
+            "Pakistan": "PK",
+            "Palestine": "PS",
+            "Philippines": "PH",
+            "Qatar": "QA",
+            "Saudi Arabia": "SA",
+            "Singapore": "SG",
+            "South Korea": "KR",
+            "Sri Lanka": "LK",
+            "Syria": "SY",
+            "Taiwan": "TW",
+            "Tajikistan": "TJ",
+            "Thailand": "TH",
+            "Timor-Leste": "TL",
+            "Turkmenistan": "TM",
+            "United Arab Emirates": "AE",
+            "Uzbekistan": "UZ",
+            "Vietnam": "VN",
+            "Yemen": "YE",
+            "Australia": "AU",
+            "Fiji": "FJ",
+            "Kiribati": "KI",
+            "Marshall Islands": "MH",
+            "Micronesia": "FM",
+            "Nauru": "NR",
+            "New Zealand": "NZ",
+            "Palau": "PW",
+            "Papua New Guinea": "PG",
+            "Samoa": "WS",
+            "Solomon Islands": "SB",
+            "Tonga": "TO",
+            "Tuvalu": "TV",
+            "Vanuatu": "VU",
+            "Antarctica": "AQ",
+            "Bouvet Island": "BV",
+            "French Southern Territories": "TF",
+            "Heard Island and McDonald Islands": "HM",
+            "South Georgia and the South Sandwich Islands": "GS",
+            "Albania": "AL",
+            "Andorra": "AD",
+            "Austria": "AT",
+            "Belarus": "BY",
+            "Belgium": "BE",
+            "Bosnia and Herzegovina": "BA",
+            "Bulgaria": "BG",
+            "Croatia": "HR",
+            "Cyprus": "CY",
+            "Czech Republic": "CZ",
+            "Denmark": "DK",
+            "Estonia": "EE",
+            "Faroe Islands": "FO",
+            "Finland": "FI",
+            "France": "FR",
+            "Germany": "DE",
+            "Gibraltar": "GI",
+            "Greece": "GR",
+            "Guernsey": "GG",
+            "Hungary": "HU",
+            "Iceland": "IS",
+            "Ireland": "IE",
+            "Isle of Man": "IM",
+            "Italy": "IT",          
+            // Add other countries and their respective code if needed.
+          };
+          
+        const countryCode = countryCodeMapping[country] || country; // Use country code when possible, otherwise fallback on the full name.
 
-        // Result [0]
-        lastRequest.town = here_town
+        lastRequest.country = country;
+        lastRequest.countryCode = countryCode;
 
-        //Changed to match fetched JSON data - Peaced_old
-        //lastRequest.zipcode = heredotcom.Response.View[0].Result[0].Location.Address.PostalCode		
-        lastRequest.zipcode = heredotcom.items[0].address.postalCode
+        // Part of the original code
+        lastRequest.title = title;
+        lastRequest.street = heredotcom.items[0].address.street;
+        lastRequest.city = heredotcom.items[0].address.city;
+        lastRequest.zipcode = heredotcom.items[0].address.postalCode;
+        lastRequest.state = heredotcom.items[0].address.state;
+        lastRequest.country2 = ` - ${heredotcom.items[0].address.country}`;
 
-        // Result [1]
-
-        lastRequest.city = here_city
-
-        if (here_city == null || here_town == 'undefined') {
-            lastRequest.city2 = ""
-        } else {
-            lastRequest.city2 = `${here_city}, `
-        }
-
-        //Changed to match fetched JSON data - Peaced_old
-        //lastRequest.state = heredotcom.Response.View[0].Result[1].Location.Address.State
-        //lastRequest.country = heredotcom.Response.View[0].Result[1].Location.Address.Country
-        //lastRequest.country2 = ` - ${here_country}`
-        //Added title and street - Peaced_old
-        lastRequest.state = heredotcom.items[0].address.state
-        lastRequest.title = heredotcom.items[0].title
-        lastRequest.street = heredotcom.items[0].address.street
-        lastRequest.country = heredotcom.items[0].address.country
-        lastRequest.country2 = ` - ${here_country}`
 
     } catch (error) {
         console.log("getHEREdotcom request failed or something.", error);
     }
 }
+
 
 //don't touch this either =p
 http.listen(config.PORT, () => {
